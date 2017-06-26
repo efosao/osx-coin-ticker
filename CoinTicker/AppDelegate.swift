@@ -37,7 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet private var quitMenuItem: NSMenuItem!
     fileprivate var currencyMenuItems = [NSMenuItem]()
     
-    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    private let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
     private let reachabilityManager = Alamofire.NetworkReachabilityManager()!
     
     private var currentExchange: Exchange! {
@@ -49,8 +49,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: NSApplicationDelegate
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Listen to workspace status notifications
-        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(onWorkspaceWillSleep(notification:)), name: NSWorkspace.willSleepNotification, object: nil)
-        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(onWorkspaceDidWake(notification:)), name: NSWorkspace.didWakeNotification, object: nil)
+        NSWorkspace.shared().notificationCenter.addObserver(self, selector: #selector(onWorkspaceWillSleep(notification:)), name: .NSWorkspaceWillSleep, object: nil)
+        NSWorkspace.shared().notificationCenter.addObserver(self, selector: #selector(onWorkspaceDidWake(notification:)), name: .NSWorkspaceDidWake, object: nil)
         
         // Listen to network reachability status
         reachabilityManager.listenerQueue = DispatchQueue(label: "com.alecananian.cointicker.reachability", qos: .utility, attributes: [.concurrent])
@@ -82,7 +82,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        NSWorkspace.shared.notificationCenter.removeObserver(self)
+        NSWorkspace.shared().notificationCenter.removeObserver(self)
         currentExchange?.stop()
     }
     
@@ -97,14 +97,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: UI Helpers
     fileprivate func updateMenuStates(forExchange exchange: Exchange) {
-        exchangeMenuItem.submenu?.items.forEach({ $0.state = ($0.tag == exchange.site.index ? .onState : .offState) })
-        updateIntervalMenuItem.submenu?.items.forEach({ $0.state = ($0.tag == TickerConfig.updateInterval ? .onState : .offState) })
+        exchangeMenuItem.submenu?.items.forEach({ $0.state = ($0.tag == exchange.site.index ? NSOnState : NSOffState) })
+        updateIntervalMenuItem.submenu?.items.forEach({ $0.state = ($0.tag == TickerConfig.updateInterval ? NSOnState : NSOffState) })
         
         for menuItem in currencyMenuItems {
             let isSelected = (menuItem.tag == exchange.baseCurrency.index)
-            menuItem.state = (isSelected ? .onState : .offState)
+            menuItem.state = (isSelected ? NSOnState : NSOffState)
             if let subMenu = menuItem.submenu {
-                subMenu.items.forEach({ $0.state = (isSelected && $0.tag == exchange.quoteCurrency.index ? .onState : .offState) })
+                subMenu.items.forEach({ $0.state = (isSelected && $0.tag == exchange.quoteCurrency.index ? NSOnState : NSOffState) })
             }
         }
         
@@ -166,7 +166,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction private func onQuit(sender: AnyObject) {
-        NSApplication.shared.terminate(self)
+        NSApplication.shared().terminate(self)
     }
 
 }

@@ -47,7 +47,7 @@ class BTCEExchange: Exchange {
         apiRequests.append(Alamofire.request(Constants.ProductListAPIPath).response(queue: apiResponseQueue, responseSerializer: DataRequest.jsonResponseSerializer()) { [unowned self] (response) in
             if let currencyPairs = (response.result.value as? JSONContainer)?["pairs"] as? JSONContainer {
                 for (currencyPair, _) in currencyPairs {
-                    let currencyPairArray = currencyPair.split(separator: "_")
+                    let currencyPairArray = currencyPair.characters.split(separator: "_").map(String.init)
                     if let baseCurrencyCode = currencyPairArray.first, let quoteCurrencyCode = currencyPairArray.last, let baseCurrency = Currency.build(fromCode: String(baseCurrencyCode)), baseCurrency.isCrypto, let quoteCurrency = Currency.build(fromCode: String(quoteCurrencyCode)) {
                         if currencyMatrix[baseCurrency] == nil {
                             currencyMatrix[baseCurrency] = [Currency]()

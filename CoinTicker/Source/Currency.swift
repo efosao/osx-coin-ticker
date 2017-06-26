@@ -94,11 +94,11 @@ enum Currency: Int {
     }
     
     var iconImage: NSImage? {
-        return NSImage(named: NSImage.Name(rawValue: code))
+        return NSImage(named: code)
     }
     
     var smallIconImage: NSImage? {
-        return NSImage(named: NSImage.Name(rawValue: "\(code)_small"))
+        return NSImage(named: "\(code)_small")
     }
     
     var isCrypto: Bool {
@@ -112,8 +112,8 @@ enum Currency: Int {
         }
         
         // Further normalization for Kraken API which prefixes X for crypto currencies and Z for physical
-        if normalizedCode.count >= 4 && (normalizedCode.characters.first == "X" || normalizedCode.characters.first == "Z") {
-            normalizedCode = String(normalizedCode.suffix(normalizedCode.count - 1))
+        if normalizedCode.characters.count >= 4 && (normalizedCode.characters.first == "X" || normalizedCode.characters.first == "Z") {
+            normalizedCode.remove(at: normalizedCode.startIndex)
             return AllValues.first(where: { $0.code.uppercased() == normalizedCode })
         }
         

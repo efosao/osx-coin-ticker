@@ -49,7 +49,11 @@ class KrakenExchange: Exchange {
                 for (currencyPairString, currencyPairData) in currencyPairs {
                     if !currencyPairString.contains(".d"), let currencyPairData = currencyPairData as? JSONContainer {
                         if let baseCurrencyCode = currencyPairData["base"] as? String, let baseCurrency = Currency.build(fromCode: baseCurrencyCode), let quoteCurrencyCode = currencyPairData["quote"] as? String, let quoteCurrency = Currency.build(fromCode: quoteCurrencyCode) {
-                            currencyMatrix[baseCurrency, default: [Currency]()].append(quoteCurrency)
+                            if currencyMatrix[baseCurrency] == nil {
+                                currencyMatrix[baseCurrency] = [Currency]()
+                            }
+                            
+                            currencyMatrix[baseCurrency]!.append(quoteCurrency)
                         }
                     }
                 }
